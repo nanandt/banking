@@ -4,7 +4,10 @@ import (
 	"banking/service"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Customer struct {
@@ -32,6 +35,20 @@ func (ch *CustomerHandlers) getAllCustomers(rw http.ResponseWriter, r *http.Requ
 		rw.Header().Add("Content-Type", "application/json")
 
 		json.NewEncoder(rw).Encode(customers)
+	}
+}
+
+func (ch *CustomerHandlers) getCustomer(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	id := vars["customer_id"]
+
+	customer, err := ch.service.GetCustomer(id)
+	rw.WriteHeader(err.Code)
+	if err != nil {
+		fmt.Fprintf(rw, err.Message)
+	} else {
+		json.NewEncoder(rw).Encode(customer)
 	}
 
 }
