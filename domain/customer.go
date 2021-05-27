@@ -3,11 +3,11 @@ package domain
 import "banking/errs"
 
 type Customer struct {
-	Id          string `json:"id"`
+	Id          string `json:"id" db:"customer_id"`
 	Name        string `json:"name"`
 	City        string `json:"city"`
 	Zipcode     string `json:"zip_code"`
-	DateofBirth string `json:"date_of_birth"`
+	DateofBirth string `json:"date_of_birth" db:"date_of_birth"`
 	Status      string `json:"status"`
 }
 
