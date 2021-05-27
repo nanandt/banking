@@ -3,7 +3,6 @@ package app
 import (
 	"banking/service"
 	"encoding/json"
-	"encoding/xml"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -24,15 +23,14 @@ func (ch *CustomerHandlers) getAllCustomers(rw http.ResponseWriter, r *http.Requ
 	// 	{"Rizky", "Kalimantan", "19281"},
 	// 	{"Fatih", "Tegal", "929292"},
 	// }
+	status := r.URL.Query().Get("status")
 
-	customers, _ := ch.service.GetAllCustomer()
+	customers, err := ch.service.GetAllCustomer(status)
 
-	if r.Header.Get("Content-Type") == "application/xml" {
-		rw.Header().Add("Content-Type", "application/xml")
-		xml.NewEncoder(rw).Encode(customers)
+	if err != nil {
+		writeResponse(rw, err.Code, err.AsMessage())
 	} else {
-		rw.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(rw).Encode(customers)
+		writeResponse(rw, http.StatusOK, customers)
 	}
 }
 
